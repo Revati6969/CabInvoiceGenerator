@@ -7,6 +7,7 @@ public class InvoiceService {
     private static final int PREMIUM_COST_PER_MIN = 2;
     private static final double PREMIUM_MINIMUM_FARE = 20;
     private TypesOfCabs types;
+    RideRepository rideRepository = new RideRepository();
 
     public InvoiceService(TypesOfCabs types) {
         this.types = types;
@@ -23,15 +24,20 @@ public class InvoiceService {
         return 0.0;
     }
 
-    public double[] calculateFare(Rides[] rides) {
+    public InvoiceSummary calculateFare(Rides[] rides) {
         double totalFare = 0;
         double[] result = new double[3];
         for(Rides ride : rides) {
             totalFare += calculateFare(ride.distance, ride.time);
         }
-        result[0] = rides.length;
-        result[1] = totalFare;
-        result[2] = totalFare/rides.length;
-        return result;
+       return new InvoiceSummary(rides.length, totalFare);
+    }
+
+    public void addRides(String userId, Rides[] rides) {
+        rideRepository.addRides(userId,rides);
+    }
+
+    public InvoiceSummary getInvoiceSummary(String userId) {
+        return this.calculateFare(rideRepository.getRides(userId));
     }
 }

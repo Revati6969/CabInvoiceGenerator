@@ -1,4 +1,5 @@
 public class Rides {
+
     public double distance;
     public int time;
 
